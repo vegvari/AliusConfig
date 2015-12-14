@@ -72,6 +72,14 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey(__DIR__ . '/fixtures/recursive2/recursive/test_file2.php', $config->getFiles());
     }
 
+    public function testCompile()
+    {
+        $config = new Config([__DIR__ . '/fixtures/test_file.php', __DIR__ . '/fixtures/test_file2.php']);
+
+        $this->assertCount(1, $config->compile());
+        $this->assertSame(['test' => 'test_file2.php'], $config->compile());
+    }
+
     public function testNotFound()
     {
         $this->setExpectedException(ConfigException::class);
