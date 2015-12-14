@@ -1,0 +1,20 @@
+{
+    "name": "alius/config",
+    "description": "Include php array files",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Romeo Vegvari",
+            "email": "romeo@vegvari.hu"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alius\\Config\\": "src/"
+        }
+    }
+}
