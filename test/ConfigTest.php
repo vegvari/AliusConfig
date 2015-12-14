@@ -26,6 +26,14 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         $this->assertSame(false, $config->isRequired('test2'));
     }
 
+    public function testFileWithRequiredConfigVariableAfterInstantiated()
+    {
+        $config = new Config(__DIR__ . '/fixtures/test_file.php');
+        $this->assertSame(false, $config->isRequired('test'));
+        $config->required('test');
+        $this->assertSame(true, $config->isRequired('test'));
+    }
+
     public function testMultipleFiles()
     {
         $config = new Config([__DIR__ . '/fixtures/test_file.php', __DIR__ . '/fixtures/test_file2.php']);
@@ -108,6 +116,13 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(ConfigException::class);
         $config = new Config(__DIR__ . '/fixtures/test_file.php', ['test2']);
+    }
+
+    public function testMissingRequiredAfterInstantiated()
+    {
+        $this->setExpectedException(ConfigException::class);
+        $config = new Config(__DIR__ . '/fixtures/test_file.php');
+        $config->required('test2');
     }
 
     public function testMissingVariable()

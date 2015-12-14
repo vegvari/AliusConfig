@@ -143,7 +143,10 @@ return [
 
 ### What’s wrong with dotenv?
 
-Nothing, you can still use it, but sometimes it’s just not enough.
+Nothing, but sometimes it’s just not enough.
 
 With this package you can include files conditionally, override variables, you
 can use bool, int, float, arrays, constants, Closures, even objects or resources.
+
+Or you can extend it, create your DatabaseConfig class so you can inject it as a
+dependency.

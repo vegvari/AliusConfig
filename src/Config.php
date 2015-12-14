@@ -37,11 +37,8 @@ class Config
             $this->read($entity);
         }
 
-        $this->required = $required;
-        foreach ($this->required as $key => $value) {
-            if (! isset($this->config[$value])) {
-                throw ConfigException::missingRequired($value);
-            }
+        if (! empty($required)) {
+            $this->required($required);
         }
     }
 
@@ -73,6 +70,23 @@ class Config
         }
 
         return $this->config[$name]['origin'];
+    }
+
+    /**
+     * Add required
+     *
+     * @param string|array $required
+     */
+    public function required($required)
+    {
+        $required = is_array($required) ? $required : [$required];
+
+        foreach ($required as $key => $value) {
+            $this->required[] = $value;
+            if (! isset($this->config[$value])) {
+                throw ConfigException::missingRequired($value);
+            }
+        }
     }
 
     /**
