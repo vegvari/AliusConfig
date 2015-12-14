@@ -97,7 +97,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     public function testNotReadable()
     {
         $this->setExpectedException(ConfigException::class);
-        $config = new Config('file_not_readable');
+        $config = new Config(__DIR__ . '/fixtures/test_file_not_readable.php');
     }
 
     public function testWrongExtension()
@@ -131,6 +131,13 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         $config = new Config(__DIR__ . '/fixtures/test_file.php');
         $config->get('test2');
     }
+
+    public function testMissingVariableOrigin()
+    {
+        $this->setExpectedException(ConfigException::class);
+        $config = new Config(__DIR__ . '/fixtures/test_file.php');
+        $config->getOrigin('test2');
+    }
 }
 
 /**
@@ -141,5 +148,5 @@ class ConfigTest extends PHPUnit_Framework_TestCase
  */
 function is_readable($file)
 {
-    return $file === 'file_not_readable' ? false : \is_readable($file);
+    return $file === __DIR__ . '/fixtures/test_file_not_readable.php' ? false : \is_readable($file);
 }
