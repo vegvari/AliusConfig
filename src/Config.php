@@ -5,7 +5,6 @@ namespace Alius\Config;
 use SplFileInfo;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
-
 use Alius\Config\Exceptions\FileNotFound;
 use Alius\Config\Exceptions\InvalidContent;
 use Alius\Config\Exceptions\FileNotReadable;

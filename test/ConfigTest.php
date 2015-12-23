@@ -3,7 +3,6 @@
 namespace Alius\Config;
 
 use PHPUnit_Framework_TestCase;
-
 use Alius\Config\Exceptions\FileNotFound;
 use Alius\Config\Exceptions\InvalidContent;
 use Alius\Config\Exceptions\FileNotReadable;
