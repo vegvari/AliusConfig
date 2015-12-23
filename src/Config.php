@@ -6,6 +6,13 @@ use SplFileInfo;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 
+use Alius\Config\Exceptions\FileNotFound;
+use Alius\Config\Exceptions\InvalidContent;
+use Alius\Config\Exceptions\FileNotReadable;
+use Alius\Config\Exceptions\InvalidExtension;
+use Alius\Config\Exceptions\UndefinedRequired;
+use Alius\Config\Exceptions\UndefinedVariable;
+
 class Config
 {
     /**
@@ -28,6 +35,7 @@ class Config
 
     /**
      * @param string|array $paths
+     * @param array        $required
      */
     public function __construct($paths, array $required = [])
     {
@@ -51,7 +59,7 @@ class Config
     public function get($name)
     {
         if (! isset($this->config[$name])) {
-            throw ConfigException::missingVariable($name);
+            throw new UndefinedVariable($name);
         }
 
         return $this->config[$name]['value'];
@@ -66,7 +74,7 @@ class Config
     public function getOrigin($name)
     {
         if (! isset($this->config[$name])) {
-            throw ConfigException::missingVariable($name);
+            throw new UndefinedVariable($name);
         }
 
         return $this->config[$name]['origin'];
@@ -81,10 +89,10 @@ class Config
     {
         $required = is_array($required) ? $required : [$required];
 
-        foreach ($required as $key => $value) {
+        foreach ($required as $value) {
             $this->required[] = $value;
             if (! isset($this->config[$value])) {
-                throw ConfigException::missingRequired($value);
+                throw new UndefinedRequired($value);
             }
         }
     }
@@ -118,11 +126,11 @@ class Config
     protected function read($entity)
     {
         if (! file_exists($entity)) {
-            throw ConfigException::notFound($entity);
+            throw new FileNotFound($entity);
         }
 
         if (! is_readable($entity)) {
-            throw ConfigException::notReadable($entity);
+            throw new FileNotReadable($entity);
         }
 
         if (is_dir($entity)) {
@@ -140,13 +148,13 @@ class Config
     protected function readFile(SplFileInfo $file)
     {
         if ($file->getExtension() !== 'php') {
-            throw ConfigException::wrongExtension($file->getRealPath());
+            throw new InvalidExtension($file->getRealPath());
         }
 
         $content = include $file->getRealPath();
 
         if (! is_array($content)) {
-            throw ConfigException::contentIsNotArray($file->getRealPath());
+            throw new InvalidContent($file->getRealPath());
         }
 
         $this->files[$file->getRealPath()] = $content;
@@ -160,7 +168,7 @@ class Config
     /**
      * Process a directory
      *
-     * @param string $dir
+     * @param RecursiveDirectoryIterator $iterator
      */
     protected function readDir(RecursiveDirectoryIterator $iterator)
     {

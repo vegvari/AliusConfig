@@ -4,9 +4,13 @@ namespace Alius\Config;
 
 use PHPUnit_Framework_TestCase;
 
-/**
- * @coversDefaultClass \Alius\Config\Config
- */
+use Alius\Config\Exceptions\FileNotFound;
+use Alius\Config\Exceptions\InvalidContent;
+use Alius\Config\Exceptions\FileNotReadable;
+use Alius\Config\Exceptions\InvalidExtension;
+use Alius\Config\Exceptions\UndefinedRequired;
+use Alius\Config\Exceptions\UndefinedVariable;
+
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
     public function testFile()
@@ -90,51 +94,51 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
     public function testNotFound()
     {
-        $this->setExpectedException(ConfigException::class);
-        $config = new Config(__DIR__ . '/fixtures/test_file_not_exist.php');
+        $this->setExpectedException(FileNotFound::class);
+        new Config(__DIR__ . '/fixtures/test_file_not_exist.php');
     }
 
     public function testNotReadable()
     {
-        $this->setExpectedException(ConfigException::class);
-        $config = new Config(__DIR__ . '/fixtures/test_file_not_readable.php');
+        $this->setExpectedException(FileNotReadable::class);
+        new Config(__DIR__ . '/fixtures/test_file_not_readable.php');
     }
 
     public function testWrongExtension()
     {
-        $this->setExpectedException(ConfigException::class);
-        $config = new Config(__DIR__ . '/fixtures/test_file_not_php.txt');
+        $this->setExpectedException(InvalidExtension::class);
+        new Config(__DIR__ . '/fixtures/test_file_not_php.txt');
     }
 
     public function testContentIsNotArray()
     {
-        $this->setExpectedException(ConfigException::class);
-        $config = new Config(__DIR__ . '/fixtures/test_file_not_array.php');
+        $this->setExpectedException(InvalidContent::class);
+        new Config(__DIR__ . '/fixtures/test_file_not_array.php');
     }
 
     public function testMissingRequired()
     {
-        $this->setExpectedException(ConfigException::class);
-        $config = new Config(__DIR__ . '/fixtures/test_file.php', ['test2']);
+        $this->setExpectedException(UndefinedRequired::class);
+        new Config(__DIR__ . '/fixtures/test_file.php', ['test2']);
     }
 
     public function testMissingRequiredAfterInstantiated()
     {
-        $this->setExpectedException(ConfigException::class);
+        $this->setExpectedException(UndefinedRequired::class);
         $config = new Config(__DIR__ . '/fixtures/test_file.php');
         $config->required('test2');
     }
 
     public function testMissingVariable()
     {
-        $this->setExpectedException(ConfigException::class);
+        $this->setExpectedException(UndefinedVariable::class);
         $config = new Config(__DIR__ . '/fixtures/test_file.php');
         $config->get('test2');
     }
 
     public function testMissingVariableOrigin()
     {
-        $this->setExpectedException(ConfigException::class);
+        $this->setExpectedException(UndefinedVariable::class);
         $config = new Config(__DIR__ . '/fixtures/test_file.php');
         $config->getOrigin('test2');
     }

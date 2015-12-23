@@ -1,5 +1,5 @@
 <?php
 
 return [
-	'test' => 'test_file.php',
+    'test' => 'test_file.php',
 ];
